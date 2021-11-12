@@ -38,7 +38,7 @@ def num_games(bet,wager,payout,games,start_money):
 
 
 def std(bet,wager,payout,games,start_money):
-    rounds = 27778
+    rounds = 30000
     a = np.empty(0)
     for i in range(rounds):
         a = np.append(num_games(bet,wager,payout,games,start_money),a)
@@ -125,40 +125,6 @@ def make_fig(arr,title,name,plt_type):
         plt.clim(0,1)
         plt.colorbar(label = 'Probabilty of Winning designated amount or more')
     plt.savefig(('{}.png').format(name))
-    plt.show()
-
-
-# In[853]:
-
-
-def reduce(x,y):
-    y_list = y.tolist()
-    y_red = []
-    x_uni = np.unique(x)
-    for i in x_uni:
-        x_i = np.where(x == i)[0].tolist()
-        avg = 0
-        for j in x_i:
-            avg+= y_list[j]
-        y_red.append(avg/len(x_i))
-    return x_uni.tolist(),y_red
-
-
-# In[587]:
-
-
-def equivalue_plot(x,y):
-    wagers = np.arange(2,60,2)
-    games = np.arange(2,52,2)
-    xfin = []
-    yfin= []
-    for i in range(len(x)):
-        xfin.append(wagers[i])
-    for j in y:
-        k = int(round(j))
-        yfin.append(games[k-1])
-    #yfin.reverse()
-    plt.plot(xfin,yfin)
     plt.show()
 
 
