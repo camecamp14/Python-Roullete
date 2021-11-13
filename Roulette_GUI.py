@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[6]:
-
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -14,10 +8,7 @@ from tkinter import *
 import os
 
 
-# In[7]:
-
-
-path = 'C:\\Users\\cam14\\Gambling\\APP\\CSVs'
+path = "" #Path string should be updated to match the location where the "CSV" folder is located
 file_map = {'1:1 Payout':['One_to_one_avg.csv','One_to_one_std.csv'],
             '2:1 Payout':['Two_to_one_avg.csv','Two_to_one_std.csv'],
             '5:1 Payout':['Five_to_one_avg.csv','Five_to_one_std.csv'],
@@ -27,13 +18,14 @@ file_map = {'1:1 Payout':['One_to_one_avg.csv','One_to_one_std.csv'],
             '17:1 Payout':['Seventeen_to_one_avg.csv','Seventeen_to_one_std.csv'],
             '35:1 Payout':['Thirty_Five_to_one_avg.csv','Thirty_Five_to_one_std.csv']
            }
-
+#Opens CSV files and removes column titles leaving only numerical values
 def open_csv(file):
     file_name = os.path.join(path,file)
     df = pd.read_csv(file_name)
     a = df.drop('Unnamed: 0',axis =1).to_numpy()
     return a
 
+#Uses a Z test to calculate the probability of winning a given amount of money (x). Mean and standard deviation values taken from CSV files
 def prob_matrix(x,means,stds):
     b = np.ones(29)
     for i in range(24):
@@ -47,19 +39,7 @@ def prob_matrix(x,means,stds):
         b=np.vstack((a,b))
     return b
 
-def prob_matrix(x,means,stds):
-    b = np.ones(29)
-    for i in range(24):
-        a = np.empty(0)
-        for j in range(29):
-            mu = means[i][j]
-            sigma = stds[i][j]
-            z = (x-mu)/sigma
-            prob = 1-st.norm.cdf(z)
-            a = np.append(a,prob)
-        b=np.vstack((a,b))
-    return b
-
+#Function creates plots based off of plot type
 def make_fig(arr,title,name,plt_type,save,x=0):
     plt.imshow(arr[1:-1],cmap='jet',extent=[5, 60, 5, 50],interpolation='quadric')
     plt.xlabel('Wager')
@@ -73,13 +53,15 @@ def make_fig(arr,title,name,plt_type,save,x=0):
         plt.savefig(('{}.png').format(name))
     plt.show()
 
+#Creates title for plot based off of plot and bet type
 def title_maker(plt_type,bet,x=0):
     if plt_type == 'avg':
         title = ('{} Average Winnings').format(bet)
     if plt_type =='prob':
         title = ('Probability of winning ${} or more with {}').format(x,bet)
     return title
-        
+
+#If user selection onption to save figure, this function automates file name creation
 def plt_file_name(plt_type,bet,x=0):
     bet_name = bet.replace(':','_to_').replace(' ','_')
     if plt_type == 'avg':
@@ -88,7 +70,8 @@ def plt_file_name(plt_type,bet,x=0):
     if plt_type == 'prob':
         name = ('(){}_prob_{}').format(path,bet_name,x)
         return name
-    
+
+#Function that is activated by the GUI to present probability plots    
 def prob():
     x = int(amnt.get())
     bet = str(bet_type.get())
@@ -103,6 +86,7 @@ def prob():
     title = title_maker('prob',bet,x)
     make_fig(prob_arr,title,name,'prob',save_fig,x)
 
+#Function that is activated by the GUI to present average winnings plots    
 def avg_plt():
     bet = str(bet_type.get())
     save_fig = str(save.get())
@@ -115,10 +99,7 @@ def avg_plt():
     title = title_maker('avg',bet)
     make_fig(means,title,fig_name,'avg',save_fig)
 
-
-# In[8]:
-
-
+#Displays when user clicks the help button. Gives directions on how to use GUI
 help_str = """
 Reading Average Plots:
     x-axis represents how much is bet each round, starting with $100.
@@ -143,6 +124,7 @@ Save Plot:
     used to calculate probabilities.
     """
 
+#Presents help message when button is clicked
 def help_window():
     color='PeachPuff2'
     wind =tk.Tk()
@@ -155,10 +137,9 @@ def help_window():
     
     wind.mainloop()
 
-
-# In[9]:
-
-
+"""
+Code for GUI layout, text and buttons. 
+"""
 root = tk.Tk()
 
 root.title('Roulette')
@@ -225,10 +206,3 @@ main.create_window(300,525,window=avg_button)
 
 
 root.mainloop()
-
-
-# In[ ]:
-
-
-
-
